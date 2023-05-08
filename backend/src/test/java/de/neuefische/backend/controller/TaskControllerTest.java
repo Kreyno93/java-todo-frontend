@@ -62,11 +62,10 @@ class TaskControllerTest {
     @Test
     @DirtiesContext
     void whenGetTaskByIdWithInvalidId_thenThrowIllegalArgumentException_andStatus400BadRequest() throws Exception{
-        try {
-            mockMvc.perform(MockMvcRequestBuilders.get("/api/todo/invalid-id")).andExpect(status().isNotFound());
-        } catch (TaskNotFoundException e) {
-            assertEquals("Task with id invalid-id does not exist", e.getCause().getMessage());
-        }
+
+            mockMvc.perform(MockMvcRequestBuilders.get("/api/todo/invalid-id"))
+                    .andExpect(status().isNotFound())
+                    .andExpect(content().string("Todo not found with id : invalid-id!  "));
     }
 
     @Test
