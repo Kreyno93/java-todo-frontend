@@ -65,7 +65,7 @@ class TaskControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/todo/invalid-id"))
                 .andExpect(status().isNotFound())
-                .andExpect(content().string("Todo not found with id : invalid-id!  "));
+                .andExpect(content().string("Todo not found with id : invalid-id!"));
     }
 
     @Test
