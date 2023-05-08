@@ -116,7 +116,8 @@ class TaskControllerTest {
                             "description": "Buy Milk",
                             "status": "DONE"
                         }
-                        """));
+                        """))
+                .andExpect(jsonPath("$.id").value(task.getId()));
     }
 
     @Test
