@@ -61,11 +61,11 @@ class TaskControllerTest {
 
     @Test
     @DirtiesContext
-    void whenGetTaskByIdWithInvalidId_thenThrowIllegalArgumentException_andStatus400BadRequest() throws Exception{
+    void whenGetTaskByIdWithInvalidId_thenThrowIllegalArgumentException_andStatus400BadRequest() throws Exception {
 
-            mockMvc.perform(MockMvcRequestBuilders.get("/api/todo/invalid-id"))
-                    .andExpect(status().isNotFound())
-                    .andExpect(content().string("Todo not found with id : invalid-id!  "));
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/todo/invalid-id"))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("Todo not found with id : invalid-id!  "));
     }
 
     @Test
@@ -92,13 +92,13 @@ class TaskControllerTest {
     @DirtiesContext
     void whenUpdateTask_thenReturnUpdatedTask_andStatusCode200OK() throws Exception {
         MvcResult response = mockMvc.perform(MockMvcRequestBuilders.post("/api/todo")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {
-                                    "description": "Buy Milk",
-                                    "status": "OPEN"
-                                }
-                                """)).andReturn();
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                            "description": "Buy Milk",
+                            "status": "OPEN"
+                        }
+                        """)).andReturn();
 
         String content = response.getResponse().getContentAsString();
 
@@ -122,31 +122,30 @@ class TaskControllerTest {
     @Test
     @DirtiesContext
     void whenUpdateTaskWithNotMatchingIds_thenThrowException() throws Exception {
-        try {
-            mockMvc.perform(MockMvcRequestBuilders.put("/api/todo/invalid-id")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content("""
-                                    {
-                                        "id" : "12345566",
-                                        "description": "Buy Milk",
-                                        "status": "OPEN"
-                                    }
-                                    """)).andExpect(status().isNotFound());
-        } catch (TaskNotFoundException e) {
-            assertEquals("Todo not found with id : invalid-id!", e.getCause().getMessage());
-        }
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/todo/invalid-id")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                    "id" : "12345566",
+                                    "description": "Buy Milk",
+                                    "status": "OPEN"
+                                }
+                                """))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("Todo not found with id : invalid-id!"));
     }
+
     @Test
     @DirtiesContext
     void whenDeletingTaskWithValidId_returnDeletedTask_andStatusCode200OK() throws Exception {
         MvcResult response = mockMvc.perform(MockMvcRequestBuilders.post("/api/todo")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
-                                {
-                                    "description": "Buy Milk",
-                                    "status": "OPEN"
-                                }
-                                """)).andReturn();
+                        {
+                            "description": "Buy Milk",
+                            "status": "OPEN"
+                        }
+                        """)).andReturn();
 
         String content = response.getResponse().getContentAsString();
 
