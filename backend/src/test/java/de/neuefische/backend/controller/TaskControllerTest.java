@@ -62,8 +62,7 @@ class TaskControllerTest {
     @DirtiesContext
     void whenGetTaskByIdWithInvalidId_thenThrowIllegalArgumentException_andStatus400BadRequest() throws Exception {
         try {
-            mockMvc.perform(MockMvcRequestBuilders.get("/api/todo/invalid-id"));
-            fail();
+            mockMvc.perform(MockMvcRequestBuilders.get("/api/todo/invalid-id")).andExpect(status().isNotFound());
         } catch (Exception e) {
             assertEquals("Task with id invalid-id does not exist", e.getCause().getMessage());
         }
@@ -132,10 +131,9 @@ class TaskControllerTest {
                                         "description": "Buy Milk",
                                         "status": "OPEN"
                                     }
-                                    """));
-            fail();
+                                    """)).andExpect(status().isNotFound());
         } catch (Exception e) {
-            assertEquals("Id of task and id in path do not match", e.getCause().getMessage());
+            assertEquals("Todo not found with id : invalid-id!", e.getCause().getMessage());
         }
     }
     @Test
@@ -169,10 +167,9 @@ class TaskControllerTest {
     @DirtiesContext
     void whenDeletingTaskWithInvalidId_thenThrowException() throws Exception {
         try {
-            mockMvc.perform(MockMvcRequestBuilders.delete("/api/todo/invalid-id"));
-            fail();
+            mockMvc.perform(MockMvcRequestBuilders.delete("/api/todo/invalid-id")).andExpect(status().isNotFound());
         } catch (Exception e) {
-            assertEquals("Task with id invalid-id does not exist", e.getCause().getMessage());
+            assertEquals("Todo not found with id : invalid-id!", e.getCause().getMessage());
         }
     }
 }
