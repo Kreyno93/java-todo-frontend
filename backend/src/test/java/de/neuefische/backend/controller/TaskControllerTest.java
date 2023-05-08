@@ -1,6 +1,7 @@
 package de.neuefische.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.neuefische.backend.exceptions.TaskNotFoundException;
 import de.neuefische.backend.model.Task;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,10 +61,10 @@ class TaskControllerTest {
 
     @Test
     @DirtiesContext
-    void whenGetTaskByIdWithInvalidId_thenThrowIllegalArgumentException_andStatus400BadRequest() throws Exception {
+    void whenGetTaskByIdWithInvalidId_thenThrowIllegalArgumentException_andStatus400BadRequest() throws Exception{
         try {
             mockMvc.perform(MockMvcRequestBuilders.get("/api/todo/invalid-id")).andExpect(status().isNotFound());
-        } catch (Exception e) {
+        } catch (TaskNotFoundException e) {
             assertEquals("Task with id invalid-id does not exist", e.getCause().getMessage());
         }
     }
@@ -121,7 +122,7 @@ class TaskControllerTest {
 
     @Test
     @DirtiesContext
-    void whenUpdateTaskWithNotMatchingIds_thenThrowException(){
+    void whenUpdateTaskWithNotMatchingIds_thenThrowException() throws Exception {
         try {
             mockMvc.perform(MockMvcRequestBuilders.put("/api/todo/invalid-id")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -132,7 +133,7 @@ class TaskControllerTest {
                                         "status": "OPEN"
                                     }
                                     """)).andExpect(status().isNotFound());
-        } catch (Exception e) {
+        } catch (TaskNotFoundException e) {
             assertEquals("Todo not found with id : invalid-id!", e.getCause().getMessage());
         }
     }
@@ -166,10 +167,9 @@ class TaskControllerTest {
     @Test
     @DirtiesContext
     void whenDeletingTaskWithInvalidId_thenThrowException() throws Exception {
-        try {
-            mockMvc.perform(MockMvcRequestBuilders.delete("/api/todo/invalid-id")).andExpect(status().isNotFound());
-        } catch (Exception e) {
-            assertEquals("Todo not found with id : invalid-id!", e.getCause().getMessage());
-        }
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/todo/invalid-id"))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("Todo not found with id : invalid-id!"));
     }
+
 }
